@@ -64,7 +64,7 @@ if uploaded_file is not None:
     st.image(image, caption="Uploaded Leaf Image", use_column_width=True)
 
     # Preprocess image (resize to model input)
-    img_size = (224, 224)   # <-- Change if your model uses a different size
+    img_size = (128,128)   # <-- Change if your model uses a different size
     img_array = image.resize(img_size)
     img_array = np.array(img_array) / 255.0  # normalize
     img_array = np.expand_dims(img_array, axis=0)  # add batch dimension
