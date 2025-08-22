@@ -276,7 +276,8 @@ elif input_method == "Use Webcam":
 
 if image is not None:
     # Display uploaded/captured image
-    st.image(image, caption="Input Image", use_column_width=True)
+    st.image(image, caption="Input Image", width=350)
+
 
     # Preprocess the image
     img = image.resize((128, 128))
