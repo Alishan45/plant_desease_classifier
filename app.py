@@ -3,14 +3,12 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
-# -----------------------------
-# Load Model & Classes
-# -----------------------------
+# Load trained model
 MODEL_PATH = "trained_plant_disease_model.keras"
 model = tf.keras.models.load_model(MODEL_PATH)
 
-classes_list = [
- 'Apple___Apple_scab',
+# Class list
+classes_list = ['Apple___Apple_scab',
  'Apple___Black_rot',
  'Apple___Cedar_apple_rust',
  'Apple___healthy',
@@ -47,42 +45,31 @@ classes_list = [
  'Tomato___Target_Spot',
  'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
  'Tomato___Tomato_mosaic_virus',
- 'Tomato___healthy'
-]
+ 'Tomato___healthy']
 
-# -----------------------------
-# Streamlit App UI
-# -----------------------------
+# Streamlit UI
 st.title("🌿 Plant Disease Classifier")
-st.write("Upload a leaf image, and the model will predict the disease category.")
+st.write("Upload a plant leaf image to identify the disease.")
 
-uploaded_file = st.file_uploader("Upload a leaf image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Show uploaded image
-    image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded Leaf Image", use_column_width=True)
+    # Display uploaded image
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    # Preprocess image (resize to model input)
-    img_size = (128,128)   # <-- Change if your model uses a different size
-    img_array = image.resize(img_size)
-    img_array = np.array(img_array) / 255.0  # normalize
-    img_array = np.expand_dims(img_array, axis=0)  # add batch dimension
+    # Preprocess the image
+    img = image.resize((128, 128))  # same size as training
+    img_array = tf.keras.preprocessing.image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)  # convert to batch
 
-    # Make prediction
+    # Prediction
     predictions = model.predict(img_array)
-    predicted_index = np.argmax(predictions, axis=1)[0]
-    predicted_class = classes_list[predicted_index]
-    confidence = float(np.max(predictions))
+    result_index = np.argmax(predictions)
+    result_class = classes_list[result_index]
+    confidence = np.max(predictions) * 100
 
     # Show results
-    st.subheader("✅ Prediction Result")
-    st.write(f"**Class:** {predicted_class}")
-    st.write(f"**Confidence:** {confidence:.2f}")
-
-    # Show top-3 predictions
-    st.subheader("🔎 Top-3 Predictions")
-    top_indices = predictions[0].argsort()[-3:][::-1]
-    for i in top_indices:
-        st.write(f"{classes_list[i]}: {predictions[0][i]:.2f}")
-
+    st.subheader("Prediction:")
+    st.write(f"**Class:** {result_class}")
+    st.write(f"**Confidence:** {confidence:.2f}%")
