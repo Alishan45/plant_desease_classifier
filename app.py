@@ -4,6 +4,11 @@ import numpy as np
 from PIL import Image
 import io
 
+st.set_page_config(
+    page_title="Plant Disease Classifier",   # Title in browser tab
+    page_icon="🌱",                          # Option 1: Emoji as favicon
+    layout="wide"
+)
 # Load trained model
 MODEL_PATH = "trained_plant_disease_model.keras"
 model = tf.keras.models.load_model(MODEL_PATH)
