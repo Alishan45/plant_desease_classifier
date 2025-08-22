@@ -1,0 +1,10 @@
+streamlit
+tensorflow==2.18.0
+keras==2.18.0
+scikit-learn
+scipy
+opencv-python
+requests
+streamlit-lottie
+pillow 
+numpy
